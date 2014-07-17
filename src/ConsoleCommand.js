@@ -2,12 +2,14 @@ var HAS = Object.prototype.hasOwnProperty;
 
 function parse(argv, params) {
 
-    params || (params = {});
+    if (!params)
+        return argv.slice(0);
     
     var pos = Object.keys(params),
         values = {},
         shorts = {},
         required = [],
+        list = [values],
         param,
         value,
         name,
@@ -75,6 +77,8 @@ function parse(argv, params) {
         
         if (param)
             values[name] = value;
+        else
+            list.push(value);
     }
     
     required.forEach(name => {
@@ -83,7 +87,7 @@ function parse(argv, params) {
             throw new Error("Missing required option: --" + name);
     });
     
-    return values;
+    return list;
 }
 
 export class ConsoleCommand {
@@ -117,7 +121,7 @@ export class ConsoleCommand {
         if (!cmd)
             throw new Error("Invalid command");
         
-        return cmd.execute(parse(args, cmd.params));
+        return cmd.execute.apply(cmd, parse(args, cmd.params));
     }
     
 }
