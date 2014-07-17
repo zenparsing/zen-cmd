@@ -18,6 +18,18 @@ export function main() {
                 
                 }).run([ "--constructor", "foobar" ]);
             });
+            
+            test
+            ._("Object prototype names aren't interpreted as short names")
+            .throws($=> {
+            
+                new ConsoleCommand({
+            
+                    params: {},
+                    execute() {}
+                
+                }).run([ "-constructor", "foobar" ]);
+            });
         },
     
         "Rest Args" (test) {

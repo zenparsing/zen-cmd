@@ -1,5 +1,10 @@
 var HAS = Object.prototype.hasOwnProperty;
 
+function has(obj, name) {
+
+    return HAS.call(obj, name);
+}
+
 function parse(argv, params) {
 
     if (!params)
@@ -41,12 +46,15 @@ function parse(argv, params) {
             if (a.slice(0, 2) === "--") {
             
                 // Long named parameter
-                param = params[name = a.slice(2)];
+                name = a.slice(2);
+                param = has(params, name) ? params[name] : null;
             
             } else {
             
                 // Short named parameter
-                param = params[name = shorts[a.slice(1)]];
+                name = a.slice(1);
+                name = has(shorts, name) ? shorts[name] : "";
+                param = has(params, name) ? params[name] : null;
             }
             
             // Verify parameter exists
@@ -69,8 +77,12 @@ function parse(argv, params) {
         } else {
         
             // Positional parameter
-            do { param = params[name = pos.shift()]; } 
-            while (param && !param.positional);
+            do { 
+            
+                name = pos.length > 0 ? pos.shift() : "";
+                param = name ? params[name] : null;
+                
+            } while (param && !param.positional);
             
             value = a;
         }
@@ -112,7 +124,7 @@ export class ConsoleCommand {
         var name = args[0] || "",
             cmd = this.fallback;
         
-        if (name && HAS.call(this.commands, name)) {
+        if (name && has(this.commands, name)) {
         
             cmd = this.commands[name];
             args = args.slice(1);
