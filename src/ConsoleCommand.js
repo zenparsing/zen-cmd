@@ -1,4 +1,4 @@
-var HAS = Object.prototype.hasOwnProperty;
+const HAS = Object.prototype.hasOwnProperty;
 
 function raise(x) {
 
@@ -16,21 +16,16 @@ function parse(argv, params) {
     if (!params)
         return argv.slice(0);
 
-    var pos = Object.keys(params),
+    let pos = Object.keys(params),
         values = {},
         shorts = {},
         required = [],
-        list = [values],
-        param,
-        value,
-        name,
-        i,
-        a;
+        list = [values];
 
     // Create short-to-long mapping
     pos.forEach(name => {
 
-        var p = params[name];
+        let p = params[name];
 
         if (p.short)
             shorts[p.short] = name;
@@ -40,12 +35,12 @@ function parse(argv, params) {
     });
 
     // For each command line arg...
-    for (i = 0; i < argv.length; ++i) {
+    for (let i = 0; i < argv.length; ++i) {
 
-        a = argv[i];
-        param = null;
-        value = null;
-        name = "";
+        let a = argv[i],
+            param = null,
+            value = null,
+            name = "";
 
         if (a[0] === "-") {
 
@@ -127,7 +122,7 @@ export class ConsoleCommand {
         // Peel off the "node" and main module args
         args || (args = process.argv.slice(2));
 
-        var name = args[0] || "",
+        let name = args[0] || "",
             cmd = this.fallback;
 
         if (name && has(this.commands, name)) {
